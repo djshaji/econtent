@@ -1,0 +1,7 @@
+{
+    "require": {
+        "kreait/firebase-tokens": "^1.11",
+        "kreait/firebase-php": "^5.11",
+        "uxweb/sweet-alert": "^2.0"
+    }
+}
