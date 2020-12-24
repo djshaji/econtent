@@ -1,6 +1,21 @@
 <?php
 include "header.php";
 include "db.php";
+// echo 'uid', gettype ($uid);
+if ($uid == NULL) {
+  include "footer.php" ;
+  printf ('<script>
+    swal ("Not authorized", "You are not logged in. Log in and try again", "error").then((e)=>{ 
+    // window.history.back ()
+    // alert ("sss")
+    location.href = "/login.php"
+    })
+
+    </script>');
+
+    die ();
+}
+
 ?>
 
 <div class="main">

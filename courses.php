@@ -62,9 +62,9 @@ $courses = [
   "Functional English",
   "General English",
   "English Literature",
-  "Communicative English"
-  // 'Honours Course 1',
-  // 'Honours Course 2'
+  "Communicative English",
+  'Honours Course 1',
+  'Honours Course 2'
 ];
 
 $semesters = [1,3,5];
@@ -72,16 +72,16 @@ $units = [1,2,3,4,5];
 $filetypes = ["PDF", "Word", "PPT", "Video", "Audio"];
 
 foreach ($semesters as $i) {
-  printf ("<tr><td class='h5' rowspan='16'>%s&nbsp;
-    <span class='badge badge-info'></span>
-    </td></tr>", $i);
+  // printf ("<tr><td class='h5' rowspan='16'>%s&nbsp;
+  //   <span class='badge badge-info'></span>
+  //   </td></tr>", $i);
   foreach ($university as $u) {
-    printf ("<tr><td rowspan='5'>%s&nbsp;
-    <span class='badge badge-primary'></span>
-    </td></tr>", $u);
+    // printf ("<tr><td rowspan='5'>%s&nbsp;
+    // <span class='badge badge-primary'></span>
+    // </td></tr>", $u);
     foreach ($courses as $c) {
-      // if ($u != 'Cluster University' && $c[0] == 'H')
-      //   continue ;
+      if ($u != 'Cluster University' && $c[0] == 'H')
+        continue ;
       $convener = '' ;
       if (isset ($content [$i][$u] [$c]["convener"])) {
           $convener_s = json_decode ($content [$i][$u] [$c]["convener"]);
@@ -101,8 +101,10 @@ foreach ($semesters as $i) {
   
       printf ("
         <tr data-semester='%s' data-university='%s' data-course='%s' >
+          <td>%s</td>
+          <td>%s</td>
           <td>
-            %s
+            %s %s
             <span class='badge badge-warning'></span>
 
           </td>
@@ -116,7 +118,10 @@ foreach ($semesters as $i) {
       ",
         // for tr
         $i, $u, $c,  
-        $c,$convener,
+        // sem and uni
+        $i, $u,
+        $c, $content [$i][$u][$c]['course_code'],
+          $convener,
           $i, $u, $c, $k + 1
   
       );
