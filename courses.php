@@ -62,9 +62,9 @@ $courses = [
   "Functional English",
   "General English",
   "English Literature",
-  "Communicative English",
-  'Honours Course 1',
-  'Honours Course 2'
+  "Communicative English"
+  // 'Honours Course 1',
+  // 'Honours Course 2'
 ];
 
 $semesters = [1,3,5];
@@ -80,9 +80,8 @@ foreach ($semesters as $i) {
     <span class='badge badge-primary'></span>
     </td></tr>", $u);
     foreach ($courses as $c) {
-      if ($u != 'Cluster University' && $c[0] == 'H')
-        continue ;
-        
+      // if ($u != 'Cluster University' && $c[0] == 'H')
+      //   continue ;
       $convener = '' ;
       if (isset ($content [$i][$u] [$c]["convener"])) {
           $convener_s = json_decode ($content [$i][$u] [$c]["convener"]);
