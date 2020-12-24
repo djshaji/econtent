@@ -98,7 +98,7 @@ include 'db.php' ;
 
 <body class="index-page sidebar-collapse">
   <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg bg-primary <?php if ($module == "Home") echo "fixed-top navbar-transparent\" color-on-scroll=\"400\"" ;?> >
+  <nav style="margin-bottom:0" class="navbar navbar-expand-lg bg-primary <?php if ($module == "Home") echo "fixed-top navbar-transparent\" color-on-scroll=\"400\"" ;?> >
     <div class="container">
       <div class="navbar-translate">
         <a class="navbar-brand" href="/">
