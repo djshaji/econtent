@@ -1,7 +1,7 @@
 <?php
 include "header.php";
 ?>
-<div class="wrapper" style="margin-top:-20">
+<div class="wrapper">
   <div class="page-header clear-filter" filter-color="orange">
     <div class="page-header-image" data-parallax="true" style="background-image:url('./assets/img/header.jpg');">
     </div>

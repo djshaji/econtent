@@ -23,8 +23,8 @@ if ($uid == NULL) {
     <div class="alert alert-info" role="alert">
       <div class="container">
           <i style="vertical-align:-3" class="fa fa-info-circle"></i>
-          &nbsp;<strong>For any query click to contact</strong> 
-          Prof. Shaji Khan
+          &nbsp;<strong>Designed by</strong> <br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Prof. Shaji Khan
           <a href="https://wa.me/917006351732" type="button" class="btn btn-sm btn-success bmd-btn-fab">
               <span style="font-size: 14;" class="fab fab-whatsapp" data-icon="logos:whatsapp" data-inline="false"></span>
           </a>

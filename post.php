@@ -67,6 +67,60 @@ function sql_exec ($sql) {
         
 }
 
+function delete_file () {
+    global $_POST, $uid, $db, $_GET ;
+    // var_dump ($_GET);
+    $uploader = sql_get ($_GET ['semester'], $_GET ['university'], $_GET ['course'], "*");
+    // $uploader = json_decode ($uploader[0] , true);
+    $json = json_decode ($uploader [0]["unit_".intval ($_GET ['unit']) . "_files"], true);
+    // var_dump ($json [$_GET ['filetype']][$_GET ['file']]);
+    if ($json [$_GET ['filetype']][$_GET ['file']]['uploader'] != $uid) {
+        printf ('<script>
+        swal ("Unauthorized", "You are not authorized to perform this operation.", "error").then((e)=>{ 
+        location.href = "%s"
+        })
+
+        </script>', $_SERVER['HTTP_REFERER']);        
+        die () ;
+    }
+
+    unset ($json [$_GET ['filetype']][$_GET ['file']]) ;
+    $sql = sprintf ("UPDATE content SET unit_%s_files = '%s' WHERE course = '%s' and university = '%s' and semester = '%s'",
+        $_GET ['unit'],json_encode ($json), 
+        $_GET ['course'], $_GET ['university'], $_GET ['semester']);
+    sql_exec ($sql);
+    $target_file = sprintf ("uploads/%s/%s/%s/%s/%s",
+        $_GET ["university"], $_GET ["semester"], $_GET ["course"], $_GET ["filetype"], $_GET ["file"]);
+    unlink ($target_file);
+
+}
+
+function delete_unit () {
+    global $_POST, $uid, $db, $_GET ;
+    // var_dump ($_GET);
+    $uploader = sql_get ($_GET ['semester'], $_GET ['university'], $_GET ['course'], "*");
+    // $uploader = json_decode ($uploader[0] , true);
+    $json = json_decode ($uploader [0]["unit_".intval ($_GET ['unit'])], true);
+    // var_dump ($json [$_GET ['filetype']][$_GET ['file']]);
+    // var_dump ($json [$_GET ['topic']]["uploader"]);
+    // die () ;
+    if ($json [$_GET ['topic']]["uploader"] != $uid) {
+        printf ('<script>
+        swal ("Unauthorized", "You are not authorized to perform this operation.", "error").then((e)=>{ 
+        location.href = "%s"
+        })
+
+        </script>', $_SERVER['HTTP_REFERER']);        
+        die () ;
+    }
+
+    unset ($json [$_GET ['topic']]) ;
+    $sql = sprintf ("UPDATE content SET unit_%s = '%s' WHERE course = '%s' and university = '%s' and semester = '%s'",
+        $_GET ['unit'],json_encode ($json), 
+        $_GET ['course'], $_GET ['university'], $_GET ['semester']);
+    sql_exec ($sql);
+}
+
 function delete_convener () {
     global $_POST, $uid, $db, $_FILES ;
     $sql = sprintf ("UPDATE content SET convener = '' WHERE course = '%s' and university = '%s' and semester = '%s'",
@@ -87,9 +141,9 @@ function delete_convener () {
 
 function add_unit () {
     global $_POST, $uid, $db, $_FILES ;
-    $uploader = sql_get ($_GET ['semester'], $_GET ['university'], $_GET ['course'], "unit_" . $_POST ['unit']);
-    $unit = json_decode ($uploader[0]["unit_" . $_POST ['unit']] );
-
+    $uploader = sql_get ($_POST ['semester'], $_POST ['university'], $_POST ['course'], "unit_" . intval ($_POST ['unit']));
+    $unit = json_decode ($uploader[0]["unit_" . intval ($_POST ['unit'])], true );
+    // var_dump ($unit);
     if (sizeof  ($unit) == 0)
         $unit = array ();
     $set = array (
@@ -361,6 +415,12 @@ switch ($mode) {
         switch ($_GET ['prop']) {
             case 'convener':
                 delete_convener ();
+                break ;
+            case 'file':
+                delete_file () ;
+                break ;
+            case 'unit':
+                delete_unit () ;
                 break ;
             default:
                 printf ('<script>

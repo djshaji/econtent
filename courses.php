@@ -136,16 +136,20 @@ foreach ($semesters as $i) {
               foreach ($unit_sa as $topic => $data) {
                 // echo $topic ;1
                   $unit .= sprintf (
-                    "<b>%s</b><br><label>%s</label><br>%s<br>%s<br>%s
-                    <button class='d-none badge badge-danger' onclick='delete_convener (this);'>
-                      <i class='fa fa-minus'></i>
-                    </button>
+                    "<div class='card p-1'>
+                    <b>%s</b><br><label>%s</label><br>".
+                    //%s<br>%s<br>%s
+                    "<button style='position:absolute;right:-5;top:-5' class='badge badge-danger' onclick='delete_unit (this, \"%s\", \"%s\");'>
+                      <i class='fa fa-trash'></i>
+                    </button></div>
                     ",
                     $topic,
                     $data -> {'faculty'},
-                    $data -> {'designation'},
-                    $data -> {'institution'},
-                    $data -> {'phone'}
+                    // $data -> {'designation'},
+                    // $data -> {'institution'},
+                    // $data -> {'phone'},
+                    $k + 1,
+                    $topic
                   );
               }
         }
@@ -153,20 +157,34 @@ foreach ($semesters as $i) {
         $file = '' ;
         if (isset ($content [$i][$u] [$c]["unit_" . $k + 1])) {
             $unit_sa = json_decode ($content [$i][$u] [$c]["unit_" . intval ($k + 1) . '_files']);
+            // var_dump ($unit_sa);
             if (sizeof ($unit_sa) != 0)
               foreach ($unit_sa as $filetype => $array) {
-                $file .= sprintf ("<br><b class='col'>%s</b>  <br>", $filetype);
+                $file .= sprintf ("<br><div class='navbar-nav card p-1'><b class='col p-1 alert alert-info'>
+                  <i class='fa fa-file'></i>
+                  %s</b> Click to open <br>", $filetype);
                 foreach ($array as $a) {
+                  if ($a -> {"file"} == null ) 
+                    // var_dump ($a); 
+                    continue;
                   $file .= sprintf (
-                    "<br><i>%s</i>%s<br>
-                    <button class='d-none badge badge-danger' onclick='delete_convener (this);'>
-                      <i class='fa fa-minus'></i>
+                    "<br><i>%s</i><br><a class='btn btn-sm btn-info' href='uploads/%s/%s/%s/%s/%s'>%s</a><br>
+                    <button style='position:absolute;right:-5;top:-5' class='badge badge-danger' onclick='delete_file (this, \"%s\", \"%s\", \"%s\");'>
+                      <i class='fa fa-trash'></i>
                     </button>
                     ",
                     $a -> {'faculty'},
+                    $u, $i , $c, $filetype,
+                    $a -> {'file'},
+                    $a -> {'file'},
+                    $k + 1,
+                    $filetype,
                     $a -> {'file'}
                   );
+
                 }
+
+                $file .= '</div>';
               }
         }
 

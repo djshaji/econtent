@@ -142,3 +142,66 @@ function delete_convener (button) {
       });
       
 }
+
+function hotkeys (event) {
+  var x = event.keyCode;
+  switch (x) {
+    case 190:
+        if (event.ctrlKey) {
+          $("#topic").modal ("show");
+          return false ;
+        }
+    default:
+        // console.log (x)
+        return true ;
+  }
+
+}
+
+function delete_file (button, unit, filetype, file) {
+  data = button.parentElement.parentElement.parentElement.parentElement.dataset
+  // console.log (data)
+  swal({
+      title: "Delete file?",
+      text: "Once deleted, you will not be able to recover this data!",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    })
+    .then((willDelete) => {
+      if (willDelete) {
+          cmd = '/post.php?mode=delete&prop=file&unit=' + unit + '&filetype=' + filetype + '&file=' + file
+          // console.log (data)
+          for (a of ['university', 'semester', 'course']) {
+              cmd = cmd + '&' + a + '=' + data [a]
+          }
+
+          location.href = cmd 
+      } 
+    });
+    
+}
+
+
+function delete_unit (button, unit, topic) {
+  data = button.parentElement.parentElement.parentElement.dataset
+  cmd = '/post.php?mode=delete&prop=unit&unit=' + unit + '&topic=' + topic
+  console.log (cmd)
+  swal({
+      title: "Delete Topic?",
+      text: "Once deleted, you will not be able to recover this data!",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    })
+    .then((willDelete) => {
+      if (willDelete) {
+          for (a of ['university', 'semester', 'course']) {
+              cmd = cmd + '&' + a + '=' + data [a]
+          }
+
+          location.href = cmd 
+      } 
+    });
+    
+}
