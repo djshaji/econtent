@@ -187,17 +187,21 @@ foreach ($semesters as $i) {
                     // var_dump ($a); 
                     continue;
                   $file .= sprintf (
-                    "<br><i>%s</i><br><a class='btn btn-sm btn-info' href='uploads/%s/%s/%s/%s/%s'>%s</a><br>
-                    <button style='position:absolute;right:-5;top:-5' class='badge badge-danger' onclick='delete_file (this, \"%s\", \"%s\", \"%s\");'>
-                      <i class='fa fa-trash'></i>
-                    </button>
+                    "<br>
+                    <div class='card card-plain'>
+                      <i>%s</i>
+                      <button  class='badge badge-danger' onclick='delete_file (this, \"%s\", \"%s\", \"%s\");'>
+                        <i class='fa fa-trash'></i>
+                      </button><br>
+                      <a class='btn btn-sm btn-info' href='uploads/%s/%s/%s/%s/%s'>%s</a><br>
+                    </div>
                     ",
                     $a -> {'faculty'},
-                    $u, $i , $c, $filetype,
-                    $a -> {'file'},
-                    $a -> {'file'},
                     $k + 1,
                     $filetype,
+                    $a -> {'file'},
+                    $u, $i , $c, $filetype,
+                    $a -> {'file'},
                     $a -> {'file'}
                   );
 

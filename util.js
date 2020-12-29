@@ -172,7 +172,7 @@ function hotkeys (event) {
 }
 
 function delete_file (button, unit, filetype, file) {
-  data = button.parentElement.parentElement.parentElement.parentElement.dataset
+  data = button.parentElement.parentElement.parentElement.parentElement.parentElement.dataset
   // console.log (data)
   swal({
       title: "Delete file?",
