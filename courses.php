@@ -80,6 +80,8 @@ foreach ($semesters as $i) {
     // <span class='badge badge-primary'></span>
     // </td></tr>", $u);
     foreach ($courses as $c) {
+      if ($_GET ['course'] != null && ($_GET ['course'] != $c || $_GET ['university'] != $u || $_GET ['semester'] != $i))
+        continue ;
       if ($u != 'Cluster University' && $c[0] == 'H')
         continue ;
       $convener = '' ;
@@ -137,17 +139,34 @@ foreach ($semesters as $i) {
                 // echo $topic ;1
                   $unit .= sprintf (
                     "<div class='card p-1'>
-                    <b>%s</b><br><label>%s</label><br>".
-                    //%s<br>%s<br>%s
-                    "<button style='position:absolute;right:-5;top:-5' class='badge badge-danger' onclick='delete_unit (this, \"%s\", \"%s\");'>
-                      <i class='fa fa-trash'></i>
-                    </button></div>
+                    <b>%s</b><br><label>%s</label><br>
+                    Designation: %s<br>Institution: %s<br>Phone: %s<br>Email: %s
+                    
+                      <div class='card-footer text-muted' style='position:absolute;right:-10;top:-30'
+                        data-faculty='%s' data-designation='%s' data-phone='%s' data-email='%s' data-title='%s' >
+                        <button  class='badge badge-info' data-toggle=\"modal\" data-target=\"#edit\" data-semester=\"%s\" data-university=\"%s\" data-course=\"%s\" data-unit=\"%s\" >
+                          <i class='fa fa-edit'></i>
+ 
+                        </button>
+                        <button  class='badge badge-danger' onclick='delete_unit (this, \"%s\", \"%s\");'>
+                          <i class='fa fa-trash'></i>
+                        </button>
+                      </div>  
+                    </div>
                     ",
                     $topic,
                     $data -> {'faculty'},
-                    // $data -> {'designation'},
-                    // $data -> {'institution'},
-                    // $data -> {'phone'},
+                    $data -> {'designation'},
+                    $data -> {'institution'},
+                    $data -> {'phone'},
+                    $data -> {'email'},
+                    //for div
+                    $data -> {"faculty"},
+                    $data -> {"designation"},
+                    $data -> {"phone"},
+                    $data -> {"email"},
+                    $topic,
+                    $i, $u, $c, $k + 1,
                     $k + 1,
                     $topic
                   );
@@ -160,7 +179,7 @@ foreach ($semesters as $i) {
             // var_dump ($unit_sa);
             if (sizeof ($unit_sa) != 0)
               foreach ($unit_sa as $filetype => $array) {
-                $file .= sprintf ("<br><div class='navbar-nav card p-1'><b class='col p-1 alert alert-info'>
+                $file .= sprintf ("<br><div class='navbar-nav card p-1'><b class='col p-1 alert alert-danger'>
                   <i class='fa fa-file'></i>
                   %s</b> Click to open <br>", $filetype);
                 foreach ($array as $a) {

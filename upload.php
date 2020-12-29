@@ -2,6 +2,16 @@
 include "header.php";
 include "db.php";
 // echo 'uid', gettype ($uid);
+$courses = [
+  "Functional English",
+  "General English",
+  "English Literature",
+  "Communicative English",
+  'Honours Course 1',
+  'Honours Course 2'
+];
+
+
 if ($uid == NULL) {
   include "footer.php" ;
   printf ('<script>
@@ -37,6 +47,54 @@ if ($uid == NULL) {
           <i class="now-ui-icons ui-1_simple-remove"></i>
           </span>
         </button>
+        <br>
+
+        <div class="row">
+          <div class="col-md-5">
+            <b>Select University</b>
+            <div class="mt-2 mb-3">
+              <select class="btn btn-primary" id='university'>
+                <option value="University of Jammu">University of Jammu</option>
+                <option value="GCW Parade (Autonomous)">GCW Parade (Autonomous)</option>
+                <option value="Cluster University Jammu">Cluster University Jammu</option>
+              </select>
+            </div>
+            <b>Select Subject</b>
+            <div class="mt-2 mb-3">
+              <select class="btn btn-primary" id='subject'>
+                <option>English</option>
+              </select>
+            </div>
+
+          </div> 
+          <div class="col-md-5">
+            <b>Select Semester</b>
+            <div class="mt-2 mb-3">
+              <select class="btn btn-primary" id='semester'>
+                <option value="1">Semester 1</option>
+                <option value="3">Semester 3</option>
+                <option value="5">Semester 5</option>
+              </select>
+              <br>
+              <b>Select Course</b>
+              <div class=" mt-2 mb-3">
+                <select class="btn btn-primary" id='course'>
+                <?php
+                  foreach ($courses as $c) {
+                    printf ("<option value='%s'>%s</option>", $c, $c);
+                  }
+                  ?>
+                </select>
+              </div>
+             </div>
+        
+          </div>
+
+        </div>
+
+        <a href="javascript: upload_open ()" class="btn btn-danger text-white">Go</a>
+        <a href="javascript: upload_open (true)" class="btn btn-success text-white">View All</a>
+
       </div>
     </div>
 
@@ -56,3 +114,8 @@ include 'modals.php';
 include 'footer.php';
 ?>
 
+<script>
+ui ("semester").value = '<?php echo $_GET ['semester'] ;?>';
+ui ("university").value = '<?php echo $_GET ['university'] ;?>';
+ui ("course").value = '<?php echo $_GET ['course'] ;?>';
+</script>

@@ -1,3 +1,4 @@
+/*
 function ui (element) {
   return document.getElementById (element)
 }
@@ -5,6 +6,9 @@ function ui (element) {
 function uic (element) {
   return document.createElement (element)
 }
+*/
+var ui = document.getElementById.bind(document);
+var uic = document.createElement.bind(document);
 
 function logout () {
     firebase.auth().signOut().then(function() {
@@ -27,7 +31,7 @@ var fireuser = null ;
 var token = null ;
 function init () {
   console.log ("init", location.href)
-  for (topic of ["topic", "file", "convener"])
+  for (topic of ["edit", "topic", "file", "convener"])
     $('#' + topic).on('show.bs.modal', function (event) {
       var button = $(event.relatedTarget) // Button that triggered the modal
       var semester = button.data('semester') // Extract info from data-* attributes
@@ -43,6 +47,15 @@ function init () {
       modal.find('#unit').val(unit)
       modal.find ("#warning").show ()
       modal.find ("#faculty").html ("")
+
+      // are we editing a topic?
+      // edit = button.parent ().attr ("data-faculty")
+      // console.log (button.parent ().attr ("data-faculty"))
+      // if (edit != null) {
+      for (a of ['faculty', 'designation', 'phone', 'email','title']) {
+          modal.find ("[name='" + a + "']").val (button.parent ().attr ('data-'+a))
+          // console.log (button.parent ().attr ('data-'+a))
+      }
 
       try {
         a = button.parent ().parent ().parent ().find ("label")     
@@ -204,4 +217,19 @@ function delete_unit (button, unit, topic) {
       } 
     });
     
+}
+
+function upload_open (all) {
+  if (all) {
+    location.href = '/upload.php'
+    return ;
+  }
+  
+  cmd = '/upload.php?' 
+  for (a of ['university', 'semester', 'course']) 
+    cmd = cmd + '&' + a + '=' + ui (a).value
+  
+  location.href = cmd
+
+  
 }

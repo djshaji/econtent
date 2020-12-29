@@ -142,6 +142,31 @@ function delete_convener () {
 function add_unit () {
     global $_POST, $uid, $db, $_FILES ;
     $uploader = sql_get ($_POST ['semester'], $_POST ['university'], $_POST ['course'], "unit_" . intval ($_POST ['unit']));
+    // var_dump (error_get_last ());
+    $unit = json_decode ($uploader[0]["unit_" . intval ($_POST ['unit'])], true );
+    // var_dump ($unit);
+    if (sizeof  ($unit) == 0)
+        $unit = array ();
+    $set = array (
+        "uploader" => $uid
+    );
+    foreach (["faculty", 'designation', 'institution', 'email', 'phone'] as $p) {
+        $set [$p] = $_POST [$p];
+    }
+
+    $unit [$_POST ['title']] = $set ;
+    $sql = sprintf ('UPDATE content set unit_%s = \'%s\' where semester = "%s" and university = "%s" and course = "%s";',
+        $_POST ['unit'], json_encode ($unit), $_POST ['semester'], $_POST ['university'], $_POST ['course']);
+
+    // echo $sql;
+    sql_exec ($sql);
+}
+
+function edit_unit () {
+    global $_POST, $uid, $db, $_FILES ;
+    // var_dump ($_POST);
+    $uploader = sql_get ($_POST ['semester'], $_POST ['university'], $_POST ['course'], "unit_" . intval ($_POST ['unit']));
+    // var_dump (error_get_last ());
     $unit = json_decode ($uploader[0]["unit_" . intval ($_POST ['unit'])], true );
     // var_dump ($unit);
     if (sizeof  ($unit) == 0)
@@ -379,6 +404,14 @@ function add_entry () {
 // add_entry ();
 
 switch ($mode) {
+    case 'edit':
+        switch ($_GET ["prop"]) {
+            default:
+            case 'unit':
+                edit_unit ();
+                break ;
+            }
+        break ;
     case 'set':
     default:
         switch ($_GET ["prop"]) {
