@@ -13,17 +13,22 @@ $courses = [
 
 
 if ($uid == NULL) {
-  include "footer.php" ;
-  printf ('<script>
-    swal ("Not authorized", "You are not logged in. Log in and try again", "error").then((e)=>{ 
-    // window.history.back ()
-    // alert ("sss")
-    location.href = "/login.php"
-    })
-
-    </script>');
-
-    die ();
+  $uid == $_GET ['uid'];
+  if ($uid == null) {
+    printf ("<script>append_uid=true;</script>");
+    include "footer.php" ;
+    printf ('<script>
+      swal ("Not authorized", "You are not logged in. Log in and try again", "error").then((e)=>{ 
+      // window.history.back ()
+      // alert ("sss")
+      // location.href = "/login.php"
+      })
+  
+      </script>');
+      var_dump ($_COOKIE);
+      die ();
+  
+  }
 }
 
 ?>
@@ -56,7 +61,7 @@ if ($uid == NULL) {
               <select class="btn btn-primary" id='university'>
                 <option value="University of Jammu">University of Jammu</option>
                 <option value="GCW Parade (Autonomous)">GCW Parade (Autonomous)</option>
-                <option value="Cluster University Jammu">Cluster University Jammu</option>
+                <option value="Cluster University">Cluster University</option>
               </select>
             </div>
             <b>Select Subject</b>
@@ -119,3 +124,4 @@ ui ("semester").value = '<?php echo $_GET ['semester'] ;?>';
 ui ("university").value = '<?php echo $_GET ['university'] ;?>';
 ui ("course").value = '<?php echo $_GET ['course'] ;?>';
 </script>
+

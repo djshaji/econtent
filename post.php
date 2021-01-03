@@ -17,10 +17,12 @@ if (php_sapi_name() != "cli") {
         // ' ;
         printf ('<script>
         swal ("Unauthorized", "You are not authorized to perform this operation.", "error").then((e)=>{ 
-        location.href = "%s"
+        // location.href = "%s"
         })
 
         </script>', $_SERVER['HTTP_REFERER']);
+
+        var_dump ($_COOKIE);
         die () ;
     }
 }

@@ -88,6 +88,14 @@ function init () {
           btn.href = '/upload.php'
         }
   
+        if (append_uid) {
+          var searchParams = new URLSearchParams(location.href);
+          if (!searchParams.has ("uid")) {
+              searchParams.append ("uid", fireuser.uid)
+              location.href = location.href + '?' + searchParams.toString ();
+          }
+            
+        }
       } catch (err) {
           console.log (err)
       }
