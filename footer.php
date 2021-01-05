@@ -6,6 +6,10 @@
   <a href="tel://+917006351732" type="button" class="btn btn-sm btn-danger bmd-btn-fab">
       <i class="fa fa-phone"  style="font-size: 20;" id='fab-phone'></i>
   </a>
+  <a href="https://docs.google.com/forms/d/e/1FAIpQLSdAxk51Kg5U3xClARdlAdpVLPD59BPlgCc_ZThbMzZHwsNrZg/viewform?usp=sf_link" type="button" class="btn btn-sm btn-warning bmd-btn-fab">
+      <i class="fa fa-comment-dots"  style="font-size: 20;" id='fab-help'></i>
+      Help
+  </a> 
       
 </div>
 

@@ -31,11 +31,28 @@ if ($uid == NULL) {
   }
 }
 
+$ddess = 'Courses Uploaded' ;
+switch ($_GET ['mode']) {
+  default:
+    break ;
+  case 'missing':
+    $ddess = 'e-Content Not Uploaded' ;
+    break ;
+  case 'report':
+    $ddess = 'e-Content Uploaded Report Semester / Unit wise' ;
+    break ;
+  case 'faculty':
+    $ddess = 'e-Content Uploaded Report Faculty wise' ;
+    break ;
+}
+
 ?>
 
 <div class="main" style="margin-top:0">
   <div class="section" style="padding:0">
-    <div class="alert alert-info" role="alert">
+    <?php if (!isset ($_GET ['mode'])) {
+      ?>
+    <div class="alert alert-info mb-0" role="alert">
       <div class="container">
           <i style="vertical-align:-3" class="fa fa-info-circle"></i>
           &nbsp;<strong>Designed by</strong> <br>
@@ -102,10 +119,29 @@ if ($uid == NULL) {
 
       </div>
     </div>
+                <?php } else {?><div ></div><?php }?>
 
+    <div class="alert alert-success" role="alert">
+      <div class="container">
+      <a href="/upload.php?mode=report" class="bold text-white btn btn-primary btn-info btn-round" type="button">Upload Status <b>Report</b></a>
+      <a href="/upload.php?mode=faculty" class="text-white btn btn-primary btn-warning btn-round" type="button"><b>Faculty</b> Wise Report</a>
+      <a href="/upload.php?mode=missing" class="text-white btn btn-danger btn-danger btn-round" type="button">Content <b>Not Uploaded</b></a>
+      <?php if (strpos ($_SERVER ['REQUEST_URI'], '?' ) != false ) {
+        ?>
+          <a href="/upload.php" class="text-white btn btn-success btn-round" type="button"><b>Upload e-Content</b></a>
+
+        <?php
+      }
+      ?>
+      </div>
+    </div>
     <div class="container">
-      <h3 class="h1-seo n-logo">Courses Uploaded</h3>
-      <b>Scroll for more ></b>
+      <h3 class="h1-seo n-logo"><?php echo $ddess ;?></h3>
+      <b class='alert-info p-2'>
+        <i class="fa fa-check text-success"> </i>
+        Scroll right (using arrow keys or mouse) for Units 3, 4 and 5&nbsp;
+        <i class="fas fa-arrow-right"></i>
+      </b>
       <div class="row table-responsive">
         <?php include 'courses.php' ;?>
 

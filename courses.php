@@ -72,7 +72,7 @@ $cols = [
 <script>
 content = <?php echo json_encode ($content);?>;
 </script>
-<?php if ($_GET ['mode'] == null || $_GET ['mode'] == 'report') {
+<?php if ($_GET ['mode'] == null || $_GET ['mode'] == 'report' || $_GET ['mode'] == 'missing') {
 ?>
 <table class="table table-hover shadow table-bordered border border-dark">
   <thead>
@@ -201,8 +201,13 @@ else if ($_GET ['mode'] == 'report') {
               echo '<td>' ;
               $faculty = array ();
               // foreach ($un as $n) {
-              //   if (!isset ($faculty [$n ['faculty']]))
-              //     $faculty [$n] = array () ;
+              //   foreach($un_f as $type => $array) {
+              //     foreach ($array as $a) {
+              //       if ($a ['faculty'] == $n ["faculty"])
+              //         continue ;
+                    
+              //     }
+              //   }
               // }
 
               foreach ($un_f as $type => $file) {
@@ -226,6 +231,77 @@ else if ($_GET ['mode'] == 'report') {
     }
 
     
+}
+
+else if ($_GET ['mode'] == 'missing') {
+  foreach ($semesters as $i) {
+      foreach ($university as $u) {
+        foreach ($courses as $c) {
+          $convener = json_decode ($content [$i][$u] [$c]['convener'], true)['faculty'];
+          
+          // var_dump ($json);
+          printf ("<tr>
+            <td>%s</td>
+            <td>%s</td>
+            <td>%s</td>
+            <td>%s</td>"
+            , $i, $u, $c, $convener);
+        
+          if ($_GET ['course'] != null && ($_GET ['course'] != $c || $_GET ['university'] != $u || $_GET ['semester'] != $i))
+              continue ;
+            if ($u != 'Cluster University' && $c[0] == 'H')
+              continue ;
+            
+          foreach ($units as $unit) {
+            $un = json_decode ($content [$i][$u] [$c]['unit_' . intval ($unit)], true);
+            $un_f = json_decode ($content [$i][$u] [$c]['unit_' . intval ($unit) . '_files'], true);
+            
+            echo '<td>' ;
+            $faculty = array ();
+            foreach ($un as $n) {
+              foreach($un_f as $type => $array) {
+                $submitted = false ;
+                foreach ($array as $a) {
+                  if ($a ['faculty'] == $n ["faculty"])
+                    // continue ;
+                    $submitted = true ;
+                  
+                }
+
+                if (! $submitted) {
+                  if (! isset ($faculty [$type]))
+                    $faculty [$type] = array () ;
+                  $faculty [$type][$n ['faculty']] = array () ;
+                  $faculty [$type][$n ['faculty']]['faculty'] = $n ['faculty'] ;
+                  $faculty [$type][$n ['faculty']]['file'] = ' ';
+                }
+                  
+              }
+            }
+
+            foreach ($faculty as $type => $file) {
+              // var_dump ($type);
+              if ($type != 'PPT' && $type != 'Video')
+                continue;
+              printf ("<br><b class='mt-1 alert-danger'>%s</b><br>", $type);
+              foreach ($file as $f) {
+                if ($f ['file'] == '')
+                  continue ;
+                printf ("<b>%s</b>:<br>%s<br>", $f ['faculty'], $f ['file']);
+              }
+            }
+
+            echo '</td>';
+          }
+
+          echo '</tr>';
+
+        }
+      }
+
+  }
+
+  
 }
 
 else # normal mode
