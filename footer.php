@@ -1,5 +1,5 @@
 
-<div class="d-print-none" style="opacity: 60%; height: 40px;transition: all 0.4s; position: fixed;bottom:15px;left:15px;z-index: 9999;">
+<div class="d-print-none" style="opacity: 80%; height: 40px;transition: all 0.4s; position: fixed;bottom:15px;left:15px;z-index: 9999;">
   <a href="https://wa.me/917006351732" type="button" class="btn btn-sm btn-success bmd-btn-fab">
       <span style="font-size: 20;" class="fab fab-whatsapp" data-icon="logos:whatsapp" data-inline="false"></span>
   </a>

@@ -279,6 +279,12 @@ else if ($_GET ['mode'] == 'missing') {
               }
             }
 
+            if (sizeof ($un_f) == 0) {
+              printf ("<b class='text-danger'>No e-Content has been uploaded</b><br>");
+              foreach ($un as $nu) {
+                printf ("%s<br>", $nu ['faculty']);
+              }
+            }
             foreach ($faculty as $type => $file) {
               // var_dump ($type);
               if ($type != 'PPT' && $type != 'Video')

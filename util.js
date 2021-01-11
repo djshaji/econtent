@@ -205,7 +205,7 @@ function delete_file (button, unit, filetype, file) {
 
 
 function delete_unit (button, unit, topic) {
-  data = button.parentElement.parentElement.parentElement.dataset
+  data = button.parentElement.parentElement.parentElement.parentElement.dataset
   cmd = '/post.php?mode=delete&prop=unit&unit=' + unit + '&topic=' + topic
   console.log (cmd)
   swal({

@@ -1,4 +1,6 @@
 <?php
+$root = "2wdKBu0eqCXATgjS7ilpwEPYj3J3";
+
 include 'header.php';
 // include 'token.php' ;
 include 'db.php' ;
@@ -70,13 +72,13 @@ function sql_exec ($sql) {
 }
 
 function delete_file () {
-    global $_POST, $uid, $db, $_GET ;
+    global $_POST, $uid, $db, $_GET, $root ;
     // var_dump ($_GET);
     $uploader = sql_get ($_GET ['semester'], $_GET ['university'], $_GET ['course'], "*");
     // $uploader = json_decode ($uploader[0] , true);
     $json = json_decode ($uploader [0]["unit_".intval ($_GET ['unit']) . "_files"], true);
     // var_dump ($json [$_GET ['filetype']][$_GET ['file']]);
-    if ($json [$_GET ['filetype']][$_GET ['file']]['uploader'] != $uid) {
+    if ($json [$_GET ['filetype']][$_GET ['file']]['uploader'] != $uid && $uid != $root) {
         printf ('<script>
         swal ("Unauthorized", "You are not authorized to perform this operation.", "error").then((e)=>{ 
         location.href = "%s"
@@ -98,7 +100,7 @@ function delete_file () {
 }
 
 function delete_unit () {
-    global $_POST, $uid, $db, $_GET ;
+    global $_POST, $uid, $db, $_GET, $root ;
     // var_dump ($_GET);
     $uploader = sql_get ($_GET ['semester'], $_GET ['university'], $_GET ['course'], "*");
     // $uploader = json_decode ($uploader[0] , true);
@@ -106,7 +108,7 @@ function delete_unit () {
     // var_dump ($json [$_GET ['filetype']][$_GET ['file']]);
     // var_dump ($json [$_GET ['topic']]["uploader"]);
     // die () ;
-    if ($json [$_GET ['topic']]["uploader"] != $uid) {
+    if ($json [$_GET ['topic']]["uploader"] != $uid && $uid != $root) {
         printf ('<script>
         swal ("Unauthorized", "You are not authorized to perform this operation.", "error").then((e)=>{ 
         location.href = "%s"
@@ -124,13 +126,14 @@ function delete_unit () {
 }
 
 function delete_convener () {
-    global $_POST, $uid, $db, $_FILES ;
+    global $_POST, $uid, $db, $_FILES, $root ;
     $sql = sprintf ("UPDATE content SET convener = '' WHERE course = '%s' and university = '%s' and semester = '%s'",
         $_GET ['course'], $_GET ['university'], $_GET ['semester']);
     $uploader = sql_get ($_GET ['semester'], $_GET ['university'], $_GET ['course'], "convener");
     $uploader = json_decode ($uploader[0]["convener"] );
     // var_dump ($uploader);
-    if ($uploader -> {"uploader"} != $uid) {
+    if ($uploader -> {"uploader"} != $uid && $uid != $root) {
+        // var_dump ($uid, $root);
         printf ('<script>
         swal ("Unauthorized", "You are not authorized to perform this operation.", "error").then((e)=>{ 
         location.href = "%s"
@@ -165,12 +168,23 @@ function add_unit () {
 }
 
 function edit_unit () {
-    global $_POST, $uid, $db, $_FILES ;
+    global $_POST, $uid, $db, $_FILES, $root ;
     // var_dump ($_POST);
     $uploader = sql_get ($_POST ['semester'], $_POST ['university'], $_POST ['course'], "unit_" . intval ($_POST ['unit']));
     // var_dump (error_get_last ());
     $unit = json_decode ($uploader[0]["unit_" . intval ($_POST ['unit'])], true );
     // var_dump ($unit);
+
+    if ($unit [$_GET ['topic']]["uploader"] != $uid && $uid != $root) {
+        printf ('<script>
+        swal ("Unauthorized", "You are not authorized to perform this operation.", "error").then((e)=>{ 
+        location.href = "%s"
+        })
+
+        </script>', $_SERVER['HTTP_REFERER']);        
+        die () ;
+    }
+
     if (sizeof  ($unit) == 0)
         $unit = array ();
     $set = array (
@@ -191,9 +205,11 @@ function edit_unit () {
 function add_file () {
     global $db, $_SERVER, $_FILES, $_POST, $_GET, $uid;
     $files = [];
+    $filename = $_FILES ['file']['name'] ;
+    $filename = str_replace ("'", "", $filename);
     foreach ($_FILES as $f => $v) {
         $target_file = sprintf ("uploads/%s/%s/%s/%s/%s",
-            $_POST ["university"], $_POST ["semester"], $_POST ["course"], $_POST ["filetype"], $_FILES ["file"]["name"]);
+            $_POST ["university"], $_POST ["semester"], $_POST ["course"], $_POST ["filetype"], $filename);
         mkdir (dirname ($target_file), 0777, true);
         // var_dump (error_get_last ());
         if (! move_uploaded_file($_FILES[$f]["tmp_name"], $target_file)) {
@@ -222,8 +238,8 @@ function add_file () {
     if (! isset ($file [$_POST ['filetype']][$_POST ['unit']]))
         $file [$_POST ['filetype']][$_POST ['unit']] = array ();
     
-    $file [$_POST ['filetype']][$_FILES ['file']['name']] = array (
-        "file" => $_FILES ['file']['name'],
+    $file [$_POST ['filetype']][$filename] = array (
+        "file" => $filename,
         "uploader" => $uid,
         'faculty' => $_POST ['faculty']
     ) ;
