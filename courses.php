@@ -27,6 +27,14 @@ foreach ($ret as $r) {
       // var_dump (array_merge($json1, $json2));
       $content [$r ['semester']][$r ['university']][$r ['course']]["convener"] = json_encode (array_merge ($json1, $json2));
 
+      // course code
+      if (isset ($content [$r ['semester']][$r ['university']][$r ['course']]["course_code"])) {
+        if (strpos ($content [$r ['semester']][$r ['university']][$r ['course']]["course_code"], $r ['course_code']) === false)
+          $content [$r ['semester']][$r ['university']][$r ['course']]["course_code"] = $content [$r ['semester']][$r ['university']][$r ['course']]["course_code"] . ' ' . $r ['course_code'];
+      }
+      else
+        $content [$r ['semester']][$r ['university']][$r ['course']]["course_code"] =  $r ['course_code'];
+
       foreach (['', '_files'] as $prefix) {
         $json1 = json_decode ($content [$r ['semester']][$r ['university']][$r ['course']]["unit_" . $i . $prefix] , true);
         $json2 = json_decode ($r["unit_" . $i . $prefix], true) ;
@@ -72,7 +80,7 @@ $cols = [
 <script>
 content = <?php echo json_encode ($content);?>;
 </script>
-<?php if ($_GET ['mode'] == null || $_GET ['mode'] == 'report' || $_GET ['mode'] == 'missing') {
+<?php if ((strpos ($_SERVER ["REQUEST_URI"], "/upload.php") === 0) && ($_GET ['mode'] == null || $_GET ['mode'] == 'report' || $_GET ['mode'] == 'missing')) {
 ?>
 <table class="table table-hover shadow table-bordered border border-dark">
   <thead>
@@ -97,7 +105,8 @@ $courses = [
   "English Literature",
   "Communicative English",
   'Honours Course 1',
-  'Honours Course 2'
+  'Honours Course 2',
+  'Honours Course 3'
 ];
 
 $semesters = [1,3,5];
@@ -310,7 +319,7 @@ else if ($_GET ['mode'] == 'missing') {
   
 }
 
-else # normal mode
+else if (strpos ($_SERVER ["REQUEST_URI"], "/upload.php") === 0) # normal mode
 foreach ($semesters as $i) {
   // printf ("<tr><td class='h5' rowspan='16'>%s&nbsp;
   //   <span class='badge badge-info'></span>
@@ -323,6 +332,8 @@ foreach ($semesters as $i) {
       if ($_GET ['course'] != null && ($_GET ['course'] != $c || $_GET ['university'] != $u || $_GET ['semester'] != $i))
         continue ;
       if ($u != 'Cluster University' && $c[0] == 'H')
+        continue ;
+      if ($u == 'Cluster University' && $c == 'Honours Course 3' && $i != 3)
         continue ;
       $convener = '' ;
       if (isset ($content [$i][$u] [$c]["convener"])) {

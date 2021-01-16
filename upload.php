@@ -8,7 +8,8 @@ $courses = [
   "English Literature",
   "Communicative English",
   'Honours Course 1',
-  'Honours Course 2'
+  'Honours Course 2',
+  'Honours Course 3'
 ];
 
 /*
