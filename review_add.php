@@ -12,16 +12,15 @@ $options = [
 ];
 
 $questions = [
-  "Is the topic Content in PDF form Relevant to the Objectives of the  E-Content  and formats Given",
-  "Is the topic Content in Audio form Relevant to the Objectives of the  E-Content  and formats Given",
-  "Is the topic Content in Video form Relevant to the Objectives of the  E-Content  and formats Given",
-  "Is the topic Content in PPT form Relevant to the Objectives of the  E-Content  and formats Given",
-  "Is the topic Content in Assessment / Evaulation form Relevant to the Objectives of the  E-Content  and formats Given",
-  "The relevance of the Content to the subject/discipline",
-  "Quantum of the Content  Submitted from Introduction  to Conclusion",
-  "Paedogogical quality, and relevance",
-  "Results (novelty, interpretation, discussion etc.)",
-  "Discussion (quality and novelty of conclusions and suggestions, etc.)",
+  "PDF content is Relevant to the topic",
+  "Audio content is Relevant to the topic",
+  "Video content is Relevant to the topic",
+  "PPT content is Relevant to the topic",
+  // "The relevance of the Content to the subject",
+  "Quantum of the Content Submitted from Introduction to Conclusion",
+  "Paedogogical quality and relevance",
+  "Novelty of interpretation and discussion",
+  "Quality and novelty of conclusions and suggestions",
   "Readability"
 ];
 
@@ -35,14 +34,14 @@ $questions_text = [
 ];
 
 ?>
-<div class="main" style="margin-top:0">
+<form class="main" style="margin-top:0" method="post" action="post.php?mode=set&prop=review">
   <div class="section" style="padding:0">
     <div class="card card-plain">
       <div class="card-body row m-2">
         <div class="col-sm-6 col-lg-3">
           <div class="form-group">
             <label>Select University</label>
-            <select class="form-control" id="university">
+            <select class="form-control" id="university" name="university">
               <option value="University of Jammu">University of Jammu</option>
               <option value="GCW Parade (Autonomous)">GCW Parade (Autonomous)</option>
               <option value="Cluster University">Cluster University</option>
@@ -52,7 +51,7 @@ $questions_text = [
         <div class="col-sm-6 col-lg-3">
           <div class="form-group">
             <label>Select Semester</label>
-            <select class="form-control" id="semester">
+            <select class="form-control" id="semester" name="semester">
               <option value="1">Semester 1</option>
               <option value="3">Semester 3</option>
               <option value="5">Semester 5</option>
@@ -62,7 +61,7 @@ $questions_text = [
         <div class="col-sm-6 col-lg-3">
           <div class="form-group">
             <label>Select Course</label>
-            <select class="form-control" id="course">
+            <select class="form-control" id="course" name="course">
               <?php
                 foreach ($courses as $c) {
                   printf ("<option value='%s'>%s</option>", $c, $c);
@@ -73,7 +72,7 @@ $questions_text = [
         </div>
         <div class="col">
           <div>&nbsp;</div>
-          <button onclick="review_open ();" class="btn btn-primary btn-round text-white">Add Review</button>
+          <a href="javascript: review_open ();" class="btn btn-primary btn-round text-white">Add Review</a>
           <button onclick="location.href='/review_add.php';" class="btn btn-info btn-round text-white">Reset</button>
 
         </div>
@@ -131,7 +130,12 @@ $questions_text = [
               foreach ($file as $f) {
                 if ($f ['file'] == '')
                   continue ;
-                printf ("<b>%s</b>:<br>%s<br>", $f ['faculty'], $f ['file']);
+                printf ("<b>%s</b>:<br><a class='nav-link btn-info' href='uploads/%s/%s/%s/%s/%s'>%s</a><br>", 
+                  $f ['faculty'], 
+                  # link
+                  $u,$i,$c,$type,$f ['file'],
+                  # end link
+                  $f ['file']);
               }
             }
 
@@ -152,7 +156,7 @@ $questions_text = [
   </div>
 </div>
 
-<form class="section" style="padding:0">
+<div class="section" style="padding:0">
   <h6 class='alert alert-info'>The following questions require evaluation on a five point scale</h6>
   <div class="m-2 row">
     <?php foreach ($questions as $q) {
@@ -163,7 +167,7 @@ $questions_text = [
 
       ', $q);
       printf ("
-        <select class='form-control id='%s' name='%s' required>
+        <select class='form-control' id='%s' name='%s' required>
           <option value=''>&nbsp;</option>
       ", $q, $q );
 
@@ -200,14 +204,21 @@ $questions_text = [
   <div class="row">
     <div class="modal-footer m-3">
       <button type="submit" class="btn btn-round btn-primary"><i class="fas fa-save"></i> Save</button>
-
+      <button onclick="location.href='/review_add.php';" class="btn btn-danger btn-round text-white"><i class="fas fa-sync"></i> Reset</button>
     </div>
   </div>
-</form>
-
 </div>
+
+</form>
 <!-- main -->
 <?php } ?>
 <?php
 include "footer.php";
 ?>
+
+
+<script>
+ui ("semester").value = '<?php echo $_GET ['semester'] ;?>';
+ui ("university").value = '<?php echo $_GET ['university'] ;?>';
+ui ("course").value = '<?php echo $_GET ['course'] ;?>';
+</script>

@@ -122,6 +122,11 @@ include 'db.php' ;
               <i class="fa fa-upload"></i> Upload e-Content
             </a>
           </li>          
+          <li class="nav-item d-none"  id="menu-review">
+            <a class="nav-link" href="/review.php">
+              <i class="fas fa-edit"></i> Review e-Content
+            </a>
+          </li>          
 
           <li class="nav-item">
             <a class="nav-link" href="/login.php" id="menu-login">

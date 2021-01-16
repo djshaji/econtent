@@ -1,6 +1,18 @@
 <?php
 include "header.php";
 include "db.php";
+
+$sql =  sprintf ("SELECT * FROM reviews where uid = '%s' ;", $uid);
+$ret = $db -> prepare ($sql) ;
+$ret -> execute () ;
+$ret = $ret -> fetchAll ();
+
+$sql =  sprintf ("SELECT * FROM reviewer where uid = '%s' ;", $uid);
+$reviewer = $db -> prepare ($sql) ;
+$reviewer -> execute () ;
+$reviewer = $reviewer -> fetchAll ();
+// var_dump ($reviewer);
+
 ?>
 
 <div class="section">
@@ -14,7 +26,7 @@ include "db.php";
               Faculty Profile</b>
           </ul>
         </div>
-        <div class="card card-plain">
+        <form class="card card-plain" method="post" action="post.php?mode=set&prop=reviewer" enctype="multipart/form-data">
           <div class="card-body row m-2">
             <div class="col-sm-6 col-lg-3">
               <div class="form-group">
@@ -43,20 +55,34 @@ include "db.php";
             <div class="col-sm-6 col-lg-3">
               <div class="form-group">
                 <label>EMail</label>
-                <input name="email" type="text" value="" placeholder="Email" class="form-control">
+                <input name="email" type="text" value="" placeholder="Email" class="form-control" required>
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+              <img width="100" id="photo" class="d-none">
+              <div id='photo-up'>
+                <label>Upload photograph</label><br>
+                <input class="form-control" placeholder="Choose file" name="photo" type="file">
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+              <img width="100" id="sign" class='d-none'>  
+              <div id='sign-up'>
+                <label>Upload signature</label><br>
+                <input class="form-control" placeholder="Choose file" name="sign" type="file">
               </div>
             </div>
             <div class="col-sm-6 col-lg-3">
               <div>
                 <label class='text-muted'>Click below to save details</label>
-                <button class="btn btn-success btn-round" type="button">Save</button>
+                <button class="btn btn-success btn-round" type="submit">Save</button>
 
               </div>
             </div>
           </div>
-        </div>
+        </form>
 
-        <div class="card-header">
+        <div class="card-header <?php if (sizeof ($reviewer) == 0) echo "d-none" ;?> ">
           <ul class="nav nav-tabs nav-tabs-neutral justify-content-center" role="tablist" data-background-color="orange">
             <li class="nav-item">
             <a class="nav-link active" data-toggle="tab" href="#home1" role="tab">Reviews</a>
@@ -69,7 +95,7 @@ include "db.php";
             </li>
           </ul>
         </div>
-        <div class="card-body">
+        <div class="card-body <?php if (sizeof ($reviewer) == 0) echo "d-none" ;?> ">
           <!-- Tab panes -->
           <div class="tab-content text-center">
             <div class="tab-pane active" id="home1" role="tabpanel">
@@ -82,7 +108,25 @@ include "db.php";
                   <th>Status</th>
                 </thead>
                 <tbody>
-                
+                <?php
+                $counter = 1 ;
+                  foreach ($ret as $r) {
+                    printf ("<tr>
+                      <td>%s</td>
+                      <td>%s</td>
+                      <td>%s</td>
+                      <td>%s</td>
+                      <td>%s</td>
+                    </tr>",
+                    $counter,
+                    $r ['university'],
+                    $r ['semester'],
+                    $r ['course'],
+                    $r ['Quantum_of_the_Content_Submitted_from_Introduction_to_Conclusion'],
+                    );
+                    $count ++ ;
+                  }
+                ?>
                 </tbody>
               </table>
 
@@ -104,6 +148,18 @@ include "db.php";
 
   </div>
 </div>
+<script>
 <?php
+if (sizeof ($reviewer) > 0) {
+  foreach (['faculty', 'designation', 'institution', 'email', 'phone'] as $v) {
+      printf ("document.getElementsByName ('%s')[0].value='%s';",$v,$reviewer [0] [$v]);
+  }
+  foreach (['photo', 'sign'] as $v) {
+      printf ("document.getElementById ('%s').src='faculty/%s/%s';",$v,$v,$uid );
+      printf ("document.getElementById ('%s-up').classList.add ('d-none');", $v);
+      printf ("document.getElementById ('%s').classList.remove ('d-none');", $v);
+  }
+}
+?></script><?php
 include 'footer.php';
 ?>

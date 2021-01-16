@@ -80,6 +80,7 @@ function init () {
       try {
         document.getElementById ("menu-login").classList.add ('d-none')
         document.getElementById ("menu-upload").classList.remove ('d-none')
+        document.getElementById ("menu-review").classList.remove ('d-none')
         document.getElementById ("menu-logout").classList.remove ('d-none')
         document.getElementById ("email").innerText = fireuser.email //.split ("@")[0]
 

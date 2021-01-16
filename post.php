@@ -40,7 +40,7 @@ function sql_get ($semester, $university, $course, $col) {
     return $ret ;    
 }
 
-function sql_exec ($sql) {
+function sql_exec ($sql, $refer = true) {
     global $db, $_SERVER ;
     try {
         $ret = $db -> query ($sql) ;
@@ -58,8 +58,8 @@ function sql_exec ($sql) {
     }
 
     // $ret -> execute () ;
-    // var_dump ($ret) ;
-    if ($ret)
+    // var_dump ($sql) ;
+    if ($ret && $refer)
         printf ('<script>
         swal ("Operation Completed Successfully", "Your operation has been completed successfully", "success").then((e)=>{ 
         // window.history.back ()
@@ -68,6 +68,8 @@ function sql_exec ($sql) {
         })
 
         </script>', $_SERVER['HTTP_REFERER']);
+    else
+        return $ret -> fetchAll () ;
         
 }
 
@@ -253,6 +255,76 @@ function add_file () {
 
 }
 
+function add_review () {
+    global $_POST, $uid, $db, $_FILES ;
+    $insert = 'uid, timestamp' ;
+    $values = sprintf ("'%s', '%s'", $uid, time ());
+    foreach ($_POST as $p => $v) {
+        $insert .= sprintf (", %s", $p) ;
+        $values .= sprintf (", '%s'", $v) ;
+    }
+
+    $sql = sprintf ("INSERT into reviews (%s) values (%s)", $insert, $values);
+    // echo $sql ;
+    sql_exec ($sql);
+
+}
+
+function add_reviewer () {
+    global $_POST, $uid, $db, $_FILES ;
+    $query = sprintf ('SELECT * from reviewer where uid = "%s"', $uid);
+    $ret = sql_exec ($query, false);
+    $update = false ;
+    if (sizeof ($ret) > 0)
+        $update = true ;
+
+    $insert = 'uid, timestamp' ;
+    $values = sprintf ("'%s', '%s'", $uid, time ());
+    foreach ($_POST as $p => $v) {
+        $insert .= sprintf (", %s", $p) ;
+        $values .= sprintf (", '%s'", $v) ;
+    }
+
+    foreach ($_FILES as $t => $f) {
+        // var_dump ($t) ; echo '<br>';
+        // var_dump ($f) ;
+        if ($f ['tmp_name'] == '')
+            continue ;
+        $filename = 'faculty/' . $t . '/' . $uid ;
+        // echo $filename;
+        if ( ! move_uploaded_file ($f ['tmp_name'], $filename)) {
+            // echo "Sorry, there was an error uploading your file.";
+            // var_dump (error_get_last ()) ;
+            printf ('<script>
+            swal ("File not uploaded", "The file could not be uploaded. Try again.\n%s", "error").then((e)=>{ 
+            location.href = "%s"
+            })
+    
+            </script>',  error_get_last ()['message'], $_SERVER['HTTP_REFERER']);
+    
+            die ();
+
+        }
+    }
+
+    $pre = 'INSERT INTO reviewer ' ;
+    $post = '';
+    if ($update) {
+        $pre = sprintf ('UPDATE reviewer set timestamp = \'%s\' ', time ());
+        foreach ($_POST as $p => $v) {
+            $pre .= sprintf (', %s = \'%s\'', $p, $v);
+        }
+        $pre .= sprintf (' WHERE uid = \'%s\'', $uid);
+        // echo $pre;
+        sql_exec ($pre);
+        die ();
+    }
+
+    $sql = sprintf ("%s (%s) values (%s) %s", $pre, $insert, $values, $post);
+    sql_exec ($sql);
+
+}
+
 function add_convener () {
     global $_POST, $uid, $db, $_FILES ;
     $sql = sprintf ("INSERT INTO content (subject, semester, university, course, course_code, convener) VALUES ('english', '%s', '%s','%s', '%s',",
@@ -433,6 +505,34 @@ switch ($mode) {
     case 'set':
     default:
         switch ($_GET ["prop"]) {
+            case 'review':
+                // var_dump ($_POST);
+                // die () ;
+                // $sql = 'CREATE TABLE reviews (uid text, timestamp text ' ;
+                // foreach ($_POST as $p => $v) {
+                //     // printf ("%s: %s <br>", $p, $v);
+                //     $sql .= sprintf (", %s text", $p) ;
+                // }
+                // $sql .= ');';
+                // echo $sql ;
+                // sql_exec ($sql);
+                add_review () ;
+                break ;
+
+            case 'reviewer':
+                // var_dump ($_POST);
+                // die () ;
+                // $sql = 'CREATE TABLE reviewer (uid text, timestamp text ' ;
+                // foreach ($_POST as $p => $v) {
+                //     // printf ("%s: %s <br>", $p, $v);
+                //     $sql .= sprintf (", %s text", $p) ;
+                // }
+                // $sql .= ');';
+                // echo $sql ;
+                // sql_exec ($sql);
+                add_reviewer () ;
+                break ;
+
             case 'convener':
                 add_convener ();
                 break ;
