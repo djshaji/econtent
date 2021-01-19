@@ -43,6 +43,7 @@ $j = json_encode ($f);
 						</div> -->
 						<div class="card-footer text-center" style="margin-top:-60">
 							<a id="upload-btn" href="/login.php" class="btn btn-neutral btn-round btn-lg">Upload e-Content</a>
+							<a id="review-btn" href="/review.php" class="btn btn-info btn-round btn-lg">Review e-Content</a>
 						</div>
 					</form>
 				</div>

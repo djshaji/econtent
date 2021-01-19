@@ -44,7 +44,11 @@ switch ($_GET ['mode']) {
     $ddess = 'e-Content Uploaded Report Semester / Unit wise' ;
     break ;
   case 'faculty':
-    $ddess = 'e-Content Uploaded Report Faculty wise' ;
+    if (!isset ($_GET ['assign']))
+      $ddess = 'e-Content Uploaded Report Faculty wise' ;
+    else
+      $ddess = 'e-Content Review Committee' ;
+    
     break ;
 }
 
@@ -118,6 +122,7 @@ switch ($_GET ['mode']) {
 
         <a href="javascript: upload_open ()" class="btn btn-danger text-white">Go</a>
         <a href="javascript: upload_open (true)" class="btn btn-success text-white">View All</a>
+        <a href="javascript: download_zip ()" class="btn btn-warning text-white">Download</a>
 
       </div>
     </div>

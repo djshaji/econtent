@@ -1,6 +1,7 @@
 var firebaseConfig = {
   apiKey: "AIzaSyCxoa3sC5zzGbePrKAPXHXsTqdNpg6jceE",
-  authDomain: "codename-plasma.firebaseapp.com",
+  authDomain: "auth.epustakalaya.devikacloud.in",
+  // authDomain: "codename-plasma.firebaseapp.com",
   databaseURL: "https://codename-plasma.firebaseio.com",
   projectId: "codename-plasma",
   storageBucket: "codename-plasma.appspot.com",

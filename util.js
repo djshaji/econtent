@@ -251,3 +251,13 @@ function review_open () {
   location.href = cmd
 
 }
+
+function download_zip () {
+  cmd = '/uploads'
+  for (a of ['university', 'semester', 'course']) 
+    cmd = cmd + '/' + document.getElementById (a).value
+  cmd = cmd + '.zip'
+
+  location.href= cmd
+
+}

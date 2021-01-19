@@ -2,6 +2,13 @@
 include "header.php";
 include "db.php";
 
+if ($uid == null) {
+  echo '<script>
+    location.href="/login.php" ;
+  </script>';
+  die () ;
+}
+
 $sql =  sprintf ("SELECT * FROM reviews where uid = '%s' ;", $uid);
 $ret = $db -> prepare ($sql) ;
 $ret -> execute () ;
@@ -14,8 +21,26 @@ $reviewer = $reviewer -> fetchAll ();
 // var_dump ($reviewer);
 
 ?>
+<div class="alert alert-info" role="alert">
+  <div class="container">
+    <div class="alert-icon">
+      <i class="now-ui-icons travel_info"></i>
+    </div>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">
+        <i class="now-ui-icons ui-1_simple-remove"></i>
+      </span>
+    </button>
+      <strong>How to use this portal</strong> <br>
+      <ul>
+        <li><b>Step 1</b> Fill your details and click on <b>Save</b></li>
+        <li><b>Step 2</b> Click on <b>Add Review</b> to add a review</li>
+      </ul>
 
-<div class="section">
+      <a href="/upload.php?mode=faculty&assign" class="btn btn-round btn-danger text-white">Review Committee Task List</a>
+  </div>
+</div>
+<div class="section p-1">
   <div class="container">
     <div class="row">
     <p class="category">e-Content Review Dashboard</p>
@@ -23,7 +48,7 @@ $reviewer = $reviewer -> fetchAll ();
         <div class="card-header">
           <ul class="nav nav-tabs nav-tabs-neutral justify-content-center" role="tablist" data-background-color="orange">
             <b> <i style="vertical-align: -2" class="now-ui-icons users_single-02" aria-hidden="true"></i>
-              Faculty Profile</b>
+              Reviewer Profile</b>
           </ul>
         </div>
         <form class="card card-plain" method="post" action="post.php?mode=set&prop=reviewer" enctype="multipart/form-data">
@@ -87,12 +112,12 @@ $reviewer = $reviewer -> fetchAll ();
             <li class="nav-item">
             <a class="nav-link active" data-toggle="tab" href="#home1" role="tab">Reviews</a>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
             <a class="nav-link" data-toggle="tab" href="#messages1" role="tab">Messages</a>
             </li>
             <li class="nav-item">
             <a class="nav-link" data-toggle="tab" href="#settings1" role="tab">Pending</a>
-            </li>
+            </li> -->
           </ul>
         </div>
         <div class="card-body <?php if (sizeof ($reviewer) == 0) echo "d-none" ;?> ">

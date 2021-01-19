@@ -172,6 +172,15 @@ function generate_title ($course, $f, $template = "catalogue.rtf") {
   }
   
 
+function zipper () {
+    $glob = glob ("uploads/*/*/*", GLOB_ONLYDIR);
+    foreach ($glob as $g) {
+      $cmd = sprintf ("zip -r '%s.zip' '%s'", $g, $g);
+      exec ($cmd, $output, $result);
+      var_dump ($output);
+    }
+}
+
 $sql =  "SELECT * FROM content where semester  = '1';";
 $ret = $db -> prepare ($sql) ;
 $ret -> execute () ;
@@ -201,6 +210,9 @@ switch ($options ["m"]) {
   break;
   case "cert":
     generate_certificates () ;
+  break;
+  case "zip":
+      zipper ();
   break;
 }
 if (php_sapi_name() != "cli") {   

@@ -16,8 +16,8 @@
     <footer class="footer" data-background-color="black">
         <div class="container footer-bottom clearfix m-2">
           <div>
-            &copy; Copyright <strong><span><img width="40px" src="assets/img/logo.png"> GDC Udhampur</span></strong>. All Rights Reserved. <br>For any help contact :Prof. Rakesh Goswami , Prof. Shaji Khan & Vikramjeet
-            Contact:9622314545, 7006351732, 7006119786
+            &copy; Copyright <strong><span><img width="40px" src="assets/img/logo.png"> GDC Udhampur</span></strong>. All Rights Reserved. <br>For any help contact : Dr. Pankaj Sharma, Prof. Rakesh Goswami , Prof. Shaji Khan & Vikramjeet
+            Contact:9419155511, 9622314545, 7006351732, 7006119786
             
           </div>
         </div>

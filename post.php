@@ -1,5 +1,8 @@
 <?php
-$root = "2wdKBu0eqCXATgjS7ilpwEPYj3J3";
+$root = [
+    "2wdKBu0eqCXATgjS7ilpwEPYj3J3",
+    "s8mMjC1mWLambunVDHSlBk5iXw42"
+];
 
 include 'header.php';
 // include 'token.php' ;
@@ -80,7 +83,7 @@ function delete_file () {
     // $uploader = json_decode ($uploader[0] , true);
     $json = json_decode ($uploader [0]["unit_".intval ($_GET ['unit']) . "_files"], true);
     // var_dump ($json [$_GET ['filetype']][$_GET ['file']]);
-    if ($json [$_GET ['filetype']][$_GET ['file']]['uploader'] != $uid && $uid != $root) {
+    if ($json [$_GET ['filetype']][$_GET ['file']]['uploader'] != $uid && array_search ($uid, $root) === false) {
         printf ('<script>
         swal ("Unauthorized", "You are not authorized to perform this operation.", "error").then((e)=>{ 
         location.href = "%s"
@@ -110,7 +113,7 @@ function delete_unit () {
     // var_dump ($json [$_GET ['filetype']][$_GET ['file']]);
     // var_dump ($json [$_GET ['topic']]["uploader"]);
     // die () ;
-    if ($json [$_GET ['topic']]["uploader"] != $uid && $uid != $root) {
+    if ($json [$_GET ['topic']]["uploader"] != $uid &&  array_search ($uid, $root) === false) {
         printf ('<script>
         swal ("Unauthorized", "You are not authorized to perform this operation.", "error").then((e)=>{ 
         location.href = "%s"
@@ -134,7 +137,7 @@ function delete_convener () {
     $uploader = sql_get ($_GET ['semester'], $_GET ['university'], $_GET ['course'], "convener");
     $uploader = json_decode ($uploader[0]["convener"] );
     // var_dump ($uploader);
-    if ($uploader -> {"uploader"} != $uid && $uid != $root) {
+    if ($uploader -> {"uploader"} != $uid &&  array_search ($uid, $root) === false) {
         // var_dump ($uid, $root);
         printf ('<script>
         swal ("Unauthorized", "You are not authorized to perform this operation.", "error").then((e)=>{ 
@@ -177,7 +180,7 @@ function edit_unit () {
     $unit = json_decode ($uploader[0]["unit_" . intval ($_POST ['unit'])], true );
     // var_dump ($unit);
 
-    if ($unit [$_GET ['topic']]["uploader"] != $uid && $uid != $root) {
+    if ($unit [$_GET ['topic']]["uploader"] != $uid &&  array_search ($uid, $root) === false) {
         printf ('<script>
         swal ("Unauthorized", "You are not authorized to perform this operation.", "error").then((e)=>{ 
         location.href = "%s"

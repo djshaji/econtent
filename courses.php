@@ -1,5 +1,7 @@
 <?php
-
+$skip = [
+  "PROF LAKSHMI"
+];
 $sql =  "SELECT * FROM content ;";
 $ret = $db -> prepare ($sql) ;
 $ret -> execute () ;
@@ -114,22 +116,6 @@ $units = [1,2,3,4,5];
 $filetypes = ["PDF", "Word", "PPT", "Video", "Audio"];
 $faculty = array ();
 if ($_GET ['mode'] == 'faculty') {
-  ?>
-  <table class="table table-hover shadow table-bordered border border-dark">
-    <thead>
-      <th>Name of Faculty Member</th>
-      <th>Phone</th>
-      <th>College</th>
-      <th>Topics / Units Assigned</th>
-      <!-- <th>PDFs</th>
-      <th>PPTs</th>
-      <th>Videos</th>
-      <th>Audios</th> -->
-      <?php foreach ($filetypes as $f) printf ("<th>%s</th>", $f) ; ?>
-      <th>%age Prepared</th>
-    </thead>
-    <tbody>
-  <?php
   foreach ($semesters as $i) {
     foreach ($university as $u) {
       foreach ($courses as $c) {
@@ -168,6 +154,23 @@ if ($_GET ['mode'] == 'faculty') {
   }
 
   // var_dump ($faculty);
+  if (! isset ($_GET ['assign'])) {
+    ?>
+    <table class="table table-hover shadow table-bordered border border-dark">
+      <thead>
+        <th>Name of Faculty Member</th>
+        <th>Phone</th>
+        <th>College</th>
+        <th>Topics / Units Assigned</th>
+        <!-- <th>PDFs</th>
+        <th>PPTs</th>
+        <th>Videos</th>
+        <th>Audios</th> -->
+        <?php foreach ($filetypes as $f) printf ("<th>%s</th>", $f) ; ?>
+        <th>%age Prepared</th>
+      </thead>
+      <tbody>
+    <?php
   foreach ($faculty as $f => $v) {
     echo '<tr>' ;
     printf ("
@@ -182,12 +185,72 @@ if ($_GET ['mode'] == 'faculty') {
     }
     echo '</tr>' ;
   }
+ } else {
+   $faculty_list = [];
+   foreach ($faculty as $f => $v) {
+    if (array_search ($f, $skip) !== false)
+      continue;
+
+     array_push ($faculty_list, $f);
+   }
+  ?>
+  <table class="table table-hover shadow table-bordered border border-dark">
+    <thead>
+      <th>Name of Faculty Member</th>
+      <th>Semester</th>
+      <th>University</th>
+      <th>Course</th>
+    </thead>
+    <tbody>
+    
+  <?php
+    $count = 0 ;
+    while ($count < sizeof ($faculty_list))
+    foreach ([1] as $s) {
+      foreach ($university as $u) {
+        foreach ($courses as $c) {
+          if ($c [0] == 'H' && $u [0] != 'C') {
+            $count ++ ;
+            continue ;
+          }
+          
+          if ($c == "Honours Course 3") {
+            $count ++ ;
+            continue ;
+          }
+
+          if ($faculty_list [$count] == '') {
+            $count ++ ;
+            continue;
+          }
+          printf ("<tr>
+            <td>%s</td>
+            <td>%s</td>
+            <td>%s</td>
+            <td>%s</td>
+          </tr>", $faculty_list [$count], $s, $u, $c);
+          $count ++ ;
+        }
+      }
+    }
+
+    ?>
+    </tbody>
+  </table>
+  <?php
+  }
 }
 
 else if ($_GET ['mode'] == 'report') {
     foreach ($semesters as $i) {
         foreach ($university as $u) {
           foreach ($courses as $c) {
+            if (isset ($_GET ['course']) && $_GET ['course'] != $c)
+              continue ;
+            if (isset ($_GET ['university']) && $_GET ['university'] != $u)
+              continue ;
+            if (isset ($_GET ['semester']) && $_GET ['semester'] != $i)
+              continue ;
             $convener = json_decode ($content [$i][$u] [$c]['convener'], true)['faculty'];
             
             // var_dump ($json);
@@ -247,7 +310,13 @@ else if ($_GET ['mode'] == 'missing') {
       foreach ($university as $u) {
         foreach ($courses as $c) {
           $convener = json_decode ($content [$i][$u] [$c]['convener'], true)['faculty'];
-          
+          if (isset ($_GET ['course']) && $_GET ['course'] != $c)
+            continue ;
+          if (isset ($_GET ['university']) && $_GET ['university'] != $u)
+            continue ;
+          if (isset ($_GET ['semester']) && $_GET ['semester'] != $i)
+            continue ;
+      
           // var_dump ($json);
           printf ("<tr>
             <td>%s</td>
