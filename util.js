@@ -243,8 +243,7 @@ function upload_open (all) {
   
 }
 
-function review_open () {
-  cmd = '/review_add.php?' 
+function review_open (cmd = '/review_add.php?') {
   for (a of ['university', 'semester', 'course']) 
     cmd = cmd + '&' + a + '=' + ui (a).value
   

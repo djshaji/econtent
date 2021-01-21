@@ -5,6 +5,33 @@ include "header.php";
 include 'csv.php' ;
 $f = parse_csv_file ("https://docs.google.com/spreadsheets/d/1NHxaB5D0FP_NvNpOAJDS4J58R2BTzMjh9slUWAFmE90/export?format=csv", 0, ",", "\n1", " \line ");
 $j = json_encode ($f);
+$files = array ();
+if (isset ($_GET ['semester']) && isset ($_GET ['university']) && isset ($_GET ['course'])) {
+  $sql =  sprintf ("SELECT * FROM content where semester = '%s' and university = '%s' and course = '%s';",
+    $_GET ['semester'], $_GET ['university'], $_GET ['course']);
+  $ret = $db -> prepare ($sql) ;
+  $ret -> execute () ;
+  $ret = $ret -> fetchAll ();
+
+  foreach ($ret as $r) {
+    for ($i = 1 ; $i <  6; $i ++) {
+      $unit = sprintf ("unit_%s_files", $i);
+      $json = json_decode ($r [$unit], true);
+      foreach ($json as $type => $array) {
+        if (!isset ($files [$type]))
+          $files [$type] = array ();
+        $array ['unit'] = $i ;
+        $files [$type][$i] = $array ;
+      }
+    }
+  }
+
+  // var_dump ($files);
+  // foreach ($files as $f => $v)
+  //   foreach ($v as $a)
+  //     foreach ($a as $s => $g)
+  //       var_dump ($s);
+}
 
 // end legacy code
 ?>
@@ -78,8 +105,14 @@ $j = json_encode ($f);
               </div>
               <b>Select Subject</b>
               <div class="col-12 mt-2 mb-3">
-                <select class="btn btn-primary" id='subject'>
-                  <option>English</option>
+                <select class="btn btn-primary" id='course'>
+                  <option>Functional English</option>
+                  <option>English Literature</option>
+                  <option>General English</option>
+                  <option>Communicative English</option>
+                  <option>Honours Course 1</option>
+                  <option>Honours Course 2</option>
+                  <option>Honours Course 3</option>
                 </select>
               </div>
               <b>Select Semester</b>
@@ -89,7 +122,10 @@ $j = json_encode ($f);
                   <option value="3">Semester 3</option>
                   <option value="5">Semester 5</option>
                 </select>
-                <a href="javascript: set ()" class="btn btn-danger text-white">Go</a>
+                <a href="javascript: review_open ('/index.php?')" class="btn btn-danger text-white">
+                  <i class="fa fa-search"></i>
+                  Go
+                </a>
               </div>
             </div>
             <!-- <div class="col-2">
@@ -103,88 +139,62 @@ $j = json_encode ($f);
                 <div class="nav-tabs-navigation">
                     <div class="nav-tabs-wrapper">
                         <!-- <ul class="nav nav-tabs" data-tabs="tabs"> -->
+                        <?php if (isset ($_GET ['university'])) {?>
                         <ul style="padding:10" class="nav nav-tabs nav-tabs-neutral justify-content-center" role="tablist" data-background-color="orange">
-                            <li class="nav-item">
-                                <a class="nav-link active" href="#home" data-toggle="tab">eContent</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#updates" data-toggle="tab">Video Lectures</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#history" data-toggle="tab">Audio Lectures</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#powerpoint" data-toggle="tab">PPTs</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#assessment" data-toggle="tab">Assessments</a>
-                            </li>
-                            <!-- <li class="nav-item">
-                                <a class="nav-link" href="#history" data-toggle="tab">Mock Tests</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#history" data-toggle="tab">Ask a Question</a>
-                            </li> -->
+                        <?php }?>
+                        <?php 
+                        $active = " active " ;
+                        $ac = true;
+                        foreach ($files as $type => $array) { 
+                          printf (
+                            '<li class="nav-item">
+                                <a class="nav-link %s" href="#%s" data-toggle="tab">%s</a>
+                            </li>', $active, $type, $type);
+                            if ($active != '') $active = '';
+                         }
+                         $active = ' active ';
+                         ?>
                         </ul>
                     </div>
                 </div>
             </div><div class="card-body ">
                 <div class="tab-content text-center">
-                    <div class="tab-pane active" id="home">
-                      <div class="row m-1">
-                        <table class="table table-hover shadow table-bordered border border-dark">
-                          <thead>
-                            <th>Course</th>
-                            <th>Download</th>
-                          </thead>
-                          <tbody id="tb">
-                          </tbody>
-                        </table>
+                <?php foreach ($files as $type => $array) { 
+                    printf ('<div class="tab-pane %s" id="%s">
+                      <div class="row m-1">',$active, $type);
+                      if ($active != '') $active = '';
+                    foreach ($array as $unit => $file) {
+                        foreach ($file as $filename => $f) {
+                      // var_dump ($un);
+                      if (sizeof ($f) == 0 || $f ['file'] == '')
+                          continue;
+                        printf ('
+                          <div class="col-md-5 m-3 card">
+                            <div class="card-body">
+                              <h4 class="card-title">Unit %s: %s</h4>
+                              <p class="card-text">%s</p>
+                              <a href="uploads/%s/%s/%s/%s/%s" class="btn btn-primary">Open file</a>
+                            </div>                      
+                          </div>',
+                        // $f ['unit'],
+                        $unit,
+                        $f ['file'],
+                        $f ['faculty'],
+                        $_GET ['university'],
+                        $_GET ['semester'],
+                        $_GET ['course'],
+                        // $f ['unit'],
+                        $type,
+                        $f ['file']
+                      );
+
+                      } 
+                    }
+                      ?>
                       </div>
 
                     </div>
-                    <div class="tab-pane" id="updates">
-                      <div class="row m-1">
-                        <!-- <table class="table table-hover shadow table-bordered border border-dark">
-                          <thead>
-                            <th>Course</th>
-                            <th>Download</th>
-                          </thead> -->
-                          <div class="row" id="tb-video">
-                          </div>
-                        <!-- </table> -->
-                      </div>
-
-                    </div>
-
-                    <div class="tab-pane" id="history">
-                    <div class="row m-1">
-                        <!-- <table class="table table-hover shadow table-bordered border border-dark">
-                          <thead>
-                            <th>Course</th>
-                            <th>Download</th>
-                          </thead> -->
-                          <div class="row col-12" id="tb-audio">
-                          </div>
-                        <!-- </table> -->
-                      </div>
-
-                    </div>
-
-                    <div class="tab-pane" id="powerpoint">
-                    <div class="row m-1">
-                      <div class="row col-12" id="tb-powerpoint">
-                      </div>
-                      </div>
-                    </div>
-                    <div class="tab-pane" id="assessment">
-                    <div class="row m-1">
-                      <div class="row col-12" id="tb-assessment">
-                      </div>
-                      </div>
-                    </div>
-
-                </div>
+                    <?php }?>
             </div>
           </div>
 
@@ -192,84 +202,6 @@ $j = json_encode ($f);
             <i class='bx bxs-save'></i>
             Download All</a>
         </div>
-
-        <script>
-          json = <?php echo $j;?>;
-          units = [
-            "Unit 1",
-            "Unit 2",
-            "Unit 3",
-            "Unit 4",
-            "Unit 5"
-          ]
-
-          media = {
-            "Upload Assessment (Google Form Link)": "assessment",
-            "Upload Video Lecture (Youtube Link)": "video",
-            "Upload Audio Lecture ": "audio",
-            "Upload Powerpoint Presentation": "powerpoint"
-          }
-          function set () {
-            t = document.getElementById ("tb") ;
-            t.innerHTML = ""
-            tv = document.getElementById ("tb-video") ;
-            tv.innerHTML = ""
-            ta = document.getElementById ("tb-audio") ;
-            ta.innerHTML = ""
-            ts = document.getElementById ("tb-assessment") ;
-            ts.innerHTML = ""
-            sem = document.getElementById ("semester").value
-            uni = document.getElementById ("university").value
-
-            for (j in json) {
-              // console.log (j)
-              if (json [j] ['Semester'] == sem && json [j]["Name of University"] == uni) {
-                tr = document.createElement ("tr")
-                tr.innerHTML = 
-                  "<td><b>" + json [j] ['Course'] + "</b><br>Convener: " + json [j]["Name of Faculty Member"] + "</td>"  
-                if ( json [j] ["Unit 1"].length > 2) {
-                  td = document.createElement ("td")
-                  td.innerHTML = "<a class='btn btn-danger m-1' href='PDF/" + json [j]["Name of University"] + '/' + json [j]["Semester"] + '/'+ json [j]["Course"] +".pdf'>PDF</a>"
-                  for (u of units) {
-                    td.innerHTML += "<a href='" + json [j] [u] + '\' class="btn m-1 btn-primary">' + u +'</a>'
-                    console.log (td.innerHTML)
-                  }
-                  tr.appendChild (td)
-                  t.appendChild (tr)
-
-                } for ( l in media) {
-                  if (json [j][l].length < 2)
-                    continue
-                  div = document.createElement ("div")
-                  div.classList.add ("col-md-6")
-                  html = '' ;
-                  document.getElementById ("tb-" + media [l]).appendChild (div)
-                  switch (media [l]) {
-                    default:
-                      html = "<a class='btn btn-success m-1' href='" + json [j][l] +"'>Download</a>"
-                      break ;
-                    case 'video':
-                      code = json [j][l].split ("?")[1].split ("&")[0].split ("=")[1]
-                      html = '<iframe width="100%" height="80%" src="https://www.youtube.com/embed/' + code + '" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'
-                      break ;
-                    case 'audio':
-                      html = '<audio style="width:100%" controls src="' + json [j][l] + '" </audio>'
-                      break ;
-                  }
-
-                  div.innerHTML = 
-                      '<div class="card shadow">' +
-                        '<div class="card-body">' +
-                          '<h5 class="card-title alert alert-success">' + json [j]["Course"] + '</h5>' +
-                          '<p class="card-text">' + html +'</p>' +
-                          '<a href="javascript: window.open (\'' + json [j][l] +'\')" class="btn btn-primary">Open in App</a>' +
-                        '</div>'
-                }
-
-              }
-            }
-          }
-          </script>
 
         <!-- End legacy code -->
       </div>
