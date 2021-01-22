@@ -6,6 +6,7 @@ include 'csv.php' ;
 $f = parse_csv_file ("https://docs.google.com/spreadsheets/d/1NHxaB5D0FP_NvNpOAJDS4J58R2BTzMjh9slUWAFmE90/export?format=csv", 0, ",", "\n1", " \line ");
 $j = json_encode ($f);
 $files = array ();
+$units = array ();
 if (isset ($_GET ['semester']) && isset ($_GET ['university']) && isset ($_GET ['course'])) {
   $sql =  sprintf ("SELECT * FROM content where semester = '%s' and university = '%s' and course = '%s';",
     $_GET ['semester'], $_GET ['university'], $_GET ['course']);
@@ -15,6 +16,15 @@ if (isset ($_GET ['semester']) && isset ($_GET ['university']) && isset ($_GET [
 
   foreach ($ret as $r) {
     for ($i = 1 ; $i <  6; $i ++) {
+      $unita = sprintf ("unit_%s", $i);
+      $json = json_decode ($r [$unita], true);
+
+      foreach ($json as $topic => $faculty) {
+        if (! isset ($units [$i]))
+          $units [$i] = array () ;
+        $units [$i][$faculty ['faculty']] = $topic ;
+      }
+
       $unit = sprintf ("unit_%s_files", $i);
       $json = json_decode ($r [$unit], true);
       foreach ($json as $type => $array) {
@@ -26,7 +36,13 @@ if (isset ($_GET ['semester']) && isset ($_GET ['university']) && isset ($_GET [
     }
   }
 
-  // var_dump ($files);
+  // foreach ($units as $u => $a) {
+  //   foreach ($a as $faculty => $topic) {
+  //     printf ("%s -> %s: %s <br>", $u, $faculty, $topic);
+  //   }
+  // }
+
+  // var_dump ($units [5]["Shalini Rana"]);
   // foreach ($files as $f => $v)
   //   foreach ($v as $a)
   //     foreach ($a as $s => $g)
@@ -84,7 +100,7 @@ if (isset ($_GET ['semester']) && isset ($_GET ['university']) && isset ($_GET [
     <!-- <section _ngcontent-iuo-c7="" class="card"><div _ngcontent-iuo-c7="" class="container"><div _ngcontent-iuo-c7="" class="row"><div _ngcontent-iuo-c7="" class="col-md-12"><div _ngcontent-iuo-c7="" class="titleheadertop"><h1 _ngcontent-iuo-c7="" class="h4 alert alert-info" ><b class="">Notification | </b> Smart India Hackathon</h1></div></div></div><div _ngcontent-iuo-c7="" class="row rowmar"><div _ngcontent-iuo-c7="" class="col-md-6"><div _ngcontent-iuo-c7="" class="imagesbox rankingimg iRankingInnovation"><img _ngcontent-iuo-c7="" src="https://www.mic.gov.in/assets/wp_images/images_modi.png"></div></div><div _ngcontent-iuo-c7="" class="col-md-6"><div _ngcontent-iuo-c7="" class="textboxsih"><p _ngcontent-iuo-c7=""><img _ngcontent-iuo-c7="" src="https://www.mic.gov.in/assets/wp_images/quat1.png"></p><div _ngcontent-iuo-c7="" class="grediyant m-2"><h4 _ngcontent-iuo-c7="">I am happy to see young minds thinking about ways to take our nation forward. It is a delight to be among smart innovators of smart India. <span _ngcontent-iuo-c7=""><img _ngcontent-iuo-c7="" src="https://www.mic.gov.in/assets/wp_images/qaut2.png"></span></h4></div></div></div></div></div><div _ngcontent-iuo-c7="" class="container"><div _ngcontent-iuo-c7="" class="row"><div _ngcontent-iuo-c7="" class="col-md-6"><div _ngcontent-iuo-c7="" class="imagestext m-2"><p _ngcontent-iuo-c7="">Smart India Hackathon 2020 is a nationwide initiative to provide students a platform to solve some of the pressing problems we face in our daily lives, and thus inculcate a culture of product innovation and a mindset of problem solving.The last edition of the hackathon saw over 5 million+ students from various colleges compete for the top prize at 65+ locations.In SIH 2020, the students would have the opportunity to work on challenges faced within various Ministries, Departments, Industries, PSUs and NGOs to create world class solutions for some of the top organizations including industries in the world, thus helping the Private sector hire the best minds from across the nation. It can help to:</p><ul _ngcontent-iuo-c7="" class="listpack"><li _ngcontent-iuo-c7=""> Harness creativity &amp; expertise of students</li><li _ngcontent-iuo-c7=""> Spark institute-level hackathons</li><li _ngcontent-iuo-c7=""> Build funnel for ‘Startup India’ campaign</li><li _ngcontent-iuo-c7=""> Crowdsource solutions for improving governance and quality of life</li><li _ngcontent-iuo-c7=""> Provide opportunity to citizens to provide innovative solutions to India’s daunting problems</li></ul><p _ngcontent-iuo-c7="">The first three editions SIH2017, SIH2018 and SIH2019 proved to be extremely successful in promoting innovation, out-of-the-box thinking in young minds, especially engineering students from across India.</p><div _ngcontent-iuo-c7="" class="pracewiner"></div><div _ngcontent-iuo-c7="" class="pracepack"></div></div></div><div _ngcontent-iuo-c7="" class="col-md-6"><div _ngcontent-iuo-c7="" class="video"><iframe _ngcontent-iuo-c7="" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" height="315" src="https://www.youtube.com/embed/aaycaWJdBTg" width="100%"></iframe></div><div _ngcontent-iuo-c7="" class="boxtext4"><h2 _ngcontent-iuo-c7="" class='m-2'>ANNOUNCMENTS</h2><div _ngcontent-iuo-c7="" class="boxp"><p _ngcontent-iuo-c7=""><a _ngcontent-iuo-c7="" href="https://www.sih.gov.in/SoftwarefinalResult">Software finale results with nodal center</a></p><p _ngcontent-iuo-c7="">Software Hackathon is now rescheduled along with Hardware Hackathon in the month of June or July, 2020.</p></div></div></div></div></div></section>     -->
     <!-- End hackathon -->
 
-    <div class="container">
+    <div class="section">
       <div class="row">
         <!-- Start legacy code -->
         <div class="container">
@@ -178,7 +194,8 @@ if (isset ($_GET ['semester']) && isset ($_GET ['university']) && isset ($_GET [
                           </div>',
                         // $f ['unit'],
                         $unit,
-                        $f ['file'],
+                        // $f ['file'],
+                        $units [$unit][$f ['faculty']],
                         $f ['faculty'],
                         $_GET ['university'],
                         $_GET ['semester'],
@@ -208,6 +225,14 @@ if (isset ($_GET ['semester']) && isset ($_GET ['university']) && isset ($_GET [
     </div>
   </div>
 </div>
+
+
+
+<script>
+ui ("semester").value = '<?php echo $_GET ['semester'] ;?>';
+ui ("university").value = '<?php echo $_GET ['university'] ;?>';
+ui ("course").value = '<?php echo $_GET ['course'] ;?>';
+</script>
 
 <?php
 include "footer.php" ;
