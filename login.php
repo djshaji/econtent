@@ -7,7 +7,8 @@ include "header.php";
     </div>
     <div class="container row">
       <div class=" brand col-md-5">
-        <img class="n-logo mt-6" src="./assets/img/now-logo.png" alt="">
+        <!-- <img class="n-logo mt-6" src="./assets/img/now-logo.png" alt=""> -->
+        <img width="150" src="./assets/img/epustakalaya.png" alt="">
         <h1 class="h1-seo"><?php echo $codename ;?></h1>
         <h3><?php //echo $description ;?></h3>
       </div>

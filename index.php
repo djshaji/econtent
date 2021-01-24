@@ -3,8 +3,8 @@ include "header.php";
 
 // legacy code
 include 'csv.php' ;
-$f = parse_csv_file ("https://docs.google.com/spreadsheets/d/1NHxaB5D0FP_NvNpOAJDS4J58R2BTzMjh9slUWAFmE90/export?format=csv", 0, ",", "\n1", " \line ");
-$j = json_encode ($f);
+// $f = parse_csv_file ("https://docs.google.com/spreadsheets/d/1NHxaB5D0FP_NvNpOAJDS4J58R2BTzMjh9slUWAFmE90/export?format=csv", 0, ",", "\n1", " \line ");
+// $j = json_encode ($f);
 $files = array ();
 $units = array ();
 if (isset ($_GET ['semester']) && isset ($_GET ['university']) && isset ($_GET ['course'])) {
@@ -57,7 +57,8 @@ if (isset ($_GET ['semester']) && isset ($_GET ['university']) && isset ($_GET [
     </div>
     <div class="container">
       <div class="content-center brand">
-        <img class="n-logo" src="./assets/img/now-logo.png" alt="">
+        <!-- <img class="n-logo" src="./assets/img/epustakalaya.png" alt=""> -->
+        <img width="150" src="./assets/img/epustakalaya.png" alt="">
         <h1 class="h1-seo"><?php echo $codename ;?></h1>
         <h3><?php echo $description ;?></h3>
       </div>
