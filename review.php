@@ -37,7 +37,8 @@ $reviewer = $reviewer -> fetchAll ();
         <li><b>Step 2</b> Click on <b>Add Review</b> to add a review</li>
       </ul>
 
-      <a href="/upload.php?mode=faculty&assign" class="btn btn-round btn-danger text-white">Review Committee Task List</a>
+      <!-- <a href="/upload.php?mode=faculty&assign" class="btn btn-round btn-danger text-white">Review Committee Task List</a> -->
+      <a href="/review.pdf" class="btn btn-round btn-danger text-white">Review Committee Task List</a>
   </div>
 </div>
 <div class="section p-1">

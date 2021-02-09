@@ -259,16 +259,22 @@ function add_file () {
 }
 
 function add_review () {
+    $log = fopen ("log.txt", "a+");
+
     global $_POST, $uid, $db, $_FILES ;
     $insert = 'uid, timestamp' ;
     $values = sprintf ("'%s', '%s'", $uid, time ());
+    fwrite ($log, sprintf ("UID: %s\n", $uid));
     foreach ($_POST as $p => $v) {
         $insert .= sprintf (", %s", $p) ;
         $values .= sprintf (", '%s'", $v) ;
+        fwrite ($log, sprintf ("POST %s => %s\n", $p, $v));
     }
 
     $sql = sprintf ("INSERT into reviews (%s) values (%s)", $insert, $values);
     // echo $sql ;
+    fwrite ($log, sprintf ("SQL: %s\n\n"), $sql);
+    fclose ($log);
     sql_exec ($sql);
 
 }
