@@ -56,6 +56,8 @@ foreach ($ret as $r) {
 $rename = array () ;
 
 foreach ($content as $semester => $s_array)  {
+    // if ($semester != 1)
+    //     continue ;
     foreach ($s_array as $university => $u_array) {
         foreach ($u_array as $course => $c_array) {
             // printf ("%s %s %s\r\n", $semester, $university, $course );
